@@ -1,25 +1,11 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "wouter";
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
-} from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { SearchIcon, FiltersIcon, MapPinIcon } from "@/assets/icons";
 import { City } from "@/lib/types";
 
 const HeroSection = () => {
   const [, setLocation] = useLocation();
-  const [activeTab, setActiveTab] = useState<string>("buy"); // buy, rent, pg, commercial
-  const [city, setCity] = useState<string>("");
-  const [propertyType, setPropertyType] = useState<string>("");
-  const [budget, setBudget] = useState<string>("");
-  const [bedrooms, setBedrooms] = useState<string[]>([]);
   const [keyword, setKeyword] = useState<string>("");
 
   const { data: cities = [] } = useQuery<City[]>({
@@ -27,201 +13,173 @@ const HeroSection = () => {
   });
 
   const handleSearch = () => {
-    // Construct query parameters
-    const params = new URLSearchParams();
-    
-    // Set listing type based on active tab
-    if (activeTab === "buy") params.set("listing_type", "sale");
-    if (activeTab === "rent") params.set("listing_type", "rent");
-    if (activeTab === "pg") params.set("listing_type", "pg");
-    if (activeTab === "commercial") params.set("property_type", "commercial");
-    
-    // Add other filters
-    if (city && city !== "all_cities") params.set("city", city);
-    if (propertyType && propertyType !== "all_types") params.set("property_type", propertyType);
-    
-    // Handle budget range
-    if (budget && budget !== "select_budget") {
-      const [min, max] = budget.split("-");
-      if (min) params.set("min_price", min);
-      if (max) params.set("max_price", max);
-    }
-    
-    // Handle bedrooms
-    if (bedrooms.length > 0) {
-      params.set("bedrooms", bedrooms.join(","));
-    }
-    
-    // Handle keyword search
-    if (keyword) params.set("keyword", keyword);
-    
-    // Navigate to properties page with filters
-    setLocation(`/properties?${params.toString()}`);
-  };
-
-  const toggleBedroom = (value: string) => {
-    if (bedrooms.includes(value)) {
-      setBedrooms(bedrooms.filter(item => item !== value));
-    } else {
-      setBedrooms([...bedrooms, value]);
+    if (keyword) {
+      setLocation(`/properties?keyword=${encodeURIComponent(keyword)}`);
     }
   };
 
   return (
-    <section className="relative bg-gray-100 pt-6 pb-8">
-      <div className="container mx-auto px-4">
-        {/* Main Headline */}
-        <div className="text-center mb-6">
-          <h1 className="text-2xl md:text-3xl font-bold text-dark">Search Real Estate Properties in India</h1>
-          <p className="text-mediumGray mt-2">From 5 Lakh+ Properties Online</p>
-        </div>
-        
-        {/* Search Tabs */}
-        <div className="bg-white rounded-t-lg shadow-sm">
-          <div className="flex">
-            <button 
-              className={`flex-1 py-3 px-4 font-medium ${activeTab === "buy" ? "text-primary border-b-2 border-primary" : "text-gray-600 border-b border-gray-200 hover:text-primary"}`}
-              onClick={() => setActiveTab("buy")}
-            >
-              Buy
-            </button>
-            <button 
-              className={`flex-1 py-3 px-4 font-medium ${activeTab === "rent" ? "text-primary border-b-2 border-primary" : "text-gray-600 border-b border-gray-200 hover:text-primary"}`}
-              onClick={() => setActiveTab("rent")}
-            >
-              Rent
-            </button>
-            <button 
-              className={`flex-1 py-3 px-4 font-medium ${activeTab === "pg" ? "text-primary border-b-2 border-primary" : "text-gray-600 border-b border-gray-200 hover:text-primary"}`}
-              onClick={() => setActiveTab("pg")}
-            >
-              PG/Co-living
-            </button>
-            <button 
-              className={`flex-1 py-3 px-4 font-medium ${activeTab === "commercial" ? "text-primary border-b-2 border-primary" : "text-gray-600 border-b border-gray-200 hover:text-primary"}`}
-              onClick={() => setActiveTab("commercial")}
-            >
-              Commercial
-            </button>
-          </div>
-          
-          {/* Search Form */}
-          <div className="p-4">
-            <div className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">City</label>
-                  <Select value={city} onValueChange={setCity}>
-                    <SelectTrigger className="w-full p-2 bg-lightGray border border-gray-300 rounded">
-                      <SelectValue placeholder="All Cities" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all_cities">All Cities</SelectItem>
-                      {cities.map((city) => (
-                        <SelectItem key={city.id} value={city.id.toString()}>
-                          {city.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Property Type</label>
-                  <Select value={propertyType} onValueChange={setPropertyType}>
-                    <SelectTrigger className="w-full p-2 bg-lightGray border border-gray-300 rounded">
-                      <SelectValue placeholder="All Types" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all_types">All Types</SelectItem>
-                      <SelectItem value="apartment">Apartment</SelectItem>
-                      <SelectItem value="villa">Villa</SelectItem>
-                      <SelectItem value="house">Independent House</SelectItem>
-                      <SelectItem value="plot">Plot</SelectItem>
-                      {activeTab === "commercial" && (
-                        <SelectItem value="commercial">Commercial</SelectItem>
-                      )}
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Budget</label>
-                  <Select value={budget} onValueChange={setBudget}>
-                    <SelectTrigger className="w-full p-2 bg-lightGray border border-gray-300 rounded">
-                      <SelectValue placeholder="Select Budget" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="select_budget">Select Budget</SelectItem>
-                      <SelectItem value="0-2000000">Under 20 Lacs</SelectItem>
-                      <SelectItem value="2000000-4000000">20 - 40 Lacs</SelectItem>
-                      <SelectItem value="4000000-6000000">40 - 60 Lacs</SelectItem>
-                      <SelectItem value="6000000-10000000">60 Lacs - 1 Cr</SelectItem>
-                      <SelectItem value="10000000-999999999">Above 1 Cr</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Bedrooms</label>
-                  <div className="flex space-x-2">
-                    <button 
-                      type="button" 
-                      className={`flex-1 p-2 border rounded text-center ${bedrooms.includes("1") ? "border-primary text-primary" : "border-gray-300 hover:border-primary hover:text-primary"}`}
-                      onClick={() => toggleBedroom("1")}
-                    >
-                      1 BHK
-                    </button>
-                    <button 
-                      type="button" 
-                      className={`flex-1 p-2 border rounded text-center ${bedrooms.includes("2") ? "border-primary text-primary" : "border-gray-300 hover:border-primary hover:text-primary"}`}
-                      onClick={() => toggleBedroom("2")}
-                    >
-                      2 BHK
-                    </button>
-                    <button 
-                      type="button" 
-                      className={`flex-1 p-2 border rounded text-center ${bedrooms.includes("3") ? "border-primary text-primary" : "border-gray-300 hover:border-primary hover:text-primary"}`}
-                      onClick={() => toggleBedroom("3")}
-                    >
-                      3 BHK
-                    </button>
+    <section className="relative bg-green-600">
+      {/* Advertisement Banner */}
+      <div className="relative w-full h-28 md:h-44 bg-green-600 overflow-hidden">
+        <div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-full flex justify-end">
+          <div className="relative w-3/4 h-full flex px-4">
+            <div className="flex-1 relative">
+              <div className="absolute right-0 top-0 w-full h-full flex items-center">
+                <div className="flex items-center justify-end space-x-4">
+                  <div className="text-white">
+                    <div className="text-xs sm:text-sm font-semibold">SS GROUP</div>
+                    <div className="text-xs mt-1">RERA NO. GSA/KEU/21SG/R106</div>
+                    <div className="mt-1 text-xs">https://rera.punjab.gov.in</div>
+                  </div>
+                  <div className="text-white text-center">
+                    <div className="text-lg sm:text-xl font-bold uppercase">SSCAMASA</div>
+                    <div className="text-xs sm:text-sm mt-1">URBAN LUXURY MEETS NATURE</div>
+                    <div className="text-xs sm:text-sm mt-1">4 BHK • 4T Starting ₹3.41 CR* | Sector 90, New Gurugram</div>
                   </div>
                 </div>
-              </div>
-              
-              <div className="flex">
-                <div className="flex-1 relative">
-                  <Input
-                    type="text"
-                    placeholder="Enter locality, project or keyword"
-                    className="w-full p-3 pl-10 border border-gray-300 rounded-l"
-                    value={keyword}
-                    onChange={(e) => setKeyword(e.target.value)}
-                  />
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <SearchIcon />
-                  </div>
-                </div>
-                <Button 
-                  onClick={handleSearch}
-                  className="bg-primary text-white px-6 py-3 rounded-r font-medium hover:bg-red-700 transition duration-200"
-                >
-                  Search
-                </Button>
-              </div>
-              
-              <div className="flex justify-center space-x-6 text-sm">
-                <button type="button" className="text-primary flex items-center">
-                  <FiltersIcon /> More Filters
-                </button>
-                <button type="button" className="text-primary flex items-center">
-                  <MapPinIcon /> Search on Map
-                </button>
               </div>
             </div>
           </div>
         </div>
+      </div>
+      
+      {/* Search Bar */}
+      <div className="bg-white rounded-full shadow-md mx-auto max-w-md -mt-6 relative z-10 mb-4">
+        <div className="flex items-center p-1 pl-4 pr-2">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          <Input
+            type="text"
+            placeholder="Search 'New Projects in Noida'"
+            className="flex-1 border-none focus:ring-0 text-sm"
+            value={keyword}
+            onChange={(e) => setKeyword(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+          />
+          <button onClick={handleSearch} className="ml-2 text-blue-500">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+            </svg>
+          </button>
+        </div>
+      </div>
+      
+      {/* Get Started Section */}
+      <div className="bg-white pb-4 pt-4">
+        <div className="container mx-auto px-4">
+          <h2 className="text-xl font-bold text-gray-800 mb-1">Get started with</h2>
+          <p className="text-gray-500 text-sm mb-4">Explore real estate options in top cities</p>
+          
+          {/* Options Grid */}
+          <div className="grid grid-cols-4 gap-3 overflow-x-auto">
+            <div className="flex flex-col items-center">
+              <div className="bg-blue-100 p-3 rounded-full mb-2">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+              </div>
+              <span className="text-sm font-medium">Buy</span>
+            </div>
+            
+            <div className="flex flex-col items-center">
+              <div className="bg-blue-100 p-3 rounded-full mb-2">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                </svg>
+              </div>
+              <span className="text-sm font-medium">Rent</span>
+            </div>
+            
+            <div className="flex flex-col items-center relative">
+              <div className="bg-blue-100 p-3 rounded-full mb-2">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                </svg>
+              </div>
+              <span className="absolute -top-1 right-1 bg-pink-500 text-white text-xs px-1 rounded">NEW</span>
+              <span className="text-sm font-medium">New Projects</span>
+            </div>
+            
+            <div className="flex flex-col items-center relative">
+              <div className="bg-blue-100 p-3 rounded-full mb-2">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <span className="absolute -top-1 right-1 bg-pink-500 text-white text-xs px-1 rounded">NEW</span>
+              <span className="text-sm font-medium">Insights</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      {/* Tools & Insights */}
+      <div className="bg-gray-100 py-4">
+        <div className="container mx-auto px-4">
+          <div className="flex justify-between items-center mb-3">
+            <div className="flex items-center">
+              <div className="bg-white p-1 rounded-md mr-2">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-md font-bold text-gray-800">Insights & Tools</h3>
+                <p className="text-xs text-gray-500">Go from browsing to buying</p>
+              </div>
+            </div>
+            <a href="#" className="text-blue-500 text-sm font-medium">View All</a>
+          </div>
+        </div>
+      </div>
+      
+      {/* Bottom Navigation */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50">
+        <div className="grid grid-cols-5 h-14">
+          <a href="#" className="flex flex-col items-center justify-center text-blue-500">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+            </svg>
+            <span className="text-xs mt-1">Home</span>
+          </a>
+          <a href="#" className="flex flex-col items-center justify-center text-gray-500">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span className="text-xs mt-1">Insights</span>
+          </a>
+          <div className="relative flex items-center justify-center">
+            <div className="absolute -top-6 bg-blue-500 rounded-full p-3">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+            </div>
+            <span className="text-xs mt-8 text-gray-500">Sell/Rent</span>
+          </div>
+          <a href="#" className="flex flex-col items-center justify-center text-gray-500">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+            </svg>
+            <span className="text-xs mt-1">Shortlisted</span>
+          </a>
+          <a href="#" className="flex flex-col items-center justify-center text-gray-500">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+            <span className="text-xs mt-1">Profile</span>
+          </a>
+        </div>
+      </div>
+      
+      {/* Cookie Policy */}
+      <div className="fixed bottom-16 left-0 right-0 bg-white shadow-md p-3 text-sm z-40">
+        <p className="mb-2">This site uses cookies to improve your experience. By browsing, you agree to our
+          <span className="text-blue-500"> Privacy Policy</span> & 
+          <span className="text-blue-500"> Cookie Policy</span>
+        </p>
+        <button className="bg-blue-500 text-white py-1 px-4 rounded">Okay</button>
       </div>
     </section>
   );

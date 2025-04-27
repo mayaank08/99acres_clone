@@ -9,106 +9,44 @@ const Header = () => {
   const [location] = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const { data: user } = useQuery<User | null>({
+  const { data: user } = useQuery({
     queryKey: ["/api/user"],
     retry: false,
-    onError: () => null
+    gcTime: 0,
+    staleTime: 0
   });
 
-  const isAuthenticated = !!user;
+  const userInfo = user as User | null;
+  const isAuthenticated = !!userInfo;
 
   return (
-    <header className="sticky top-0 z-50 bg-white shadow-md">
-      <div className="container mx-auto px-4">
+    <header className="sticky top-0 z-50 bg-blue-600 text-white">
+      <div className="max-w-full px-2">
         {/* Top Header */}
-        <div className="flex items-center justify-between py-2 border-b border-gray-200">
-          <div className="flex items-center space-x-6">
-            <Link href="/">
-              <a className="flex items-center">
-                <img
-                  src="https://static.99acres.com/universalapp/img/99acres_logo.jpg"
-                  alt="99acres Clone"
-                  className="h-8"
-                />
-              </a>
-            </Link>
-            
-            <div className="hidden md:flex space-x-6 text-sm">
-              <Link href="/properties?listing_type=sale">
-                <a className={`hover:text-primary ${location.startsWith('/properties') && location.includes('listing_type=sale') ? 'text-primary' : ''}`}>
-                  Buy
-                </a>
-              </Link>
-              <Link href="/properties?listing_type=rent">
-                <a className={`hover:text-primary ${location.startsWith('/properties') && location.includes('listing_type=rent') ? 'text-primary' : ''}`}>
-                  Rent
-                </a>
-              </Link>
-              <Link href="/properties?listing_type=pg">
-                <a className={`hover:text-primary ${location.startsWith('/properties') && location.includes('listing_type=pg') ? 'text-primary' : ''}`}>
-                  PG/Co-living
-                </a>
-              </Link>
-              <Link href="/properties?property_type=commercial">
-                <a className={`hover:text-primary ${location.startsWith('/properties') && location.includes('property_type=commercial') ? 'text-primary' : ''}`}>
-                  Commercial
-                </a>
-              </Link>
-              <Link href="/home-loans">
-                <a className={`hover:text-primary ${location === '/home-loans' ? 'text-primary' : ''}`}>
-                  Home Loans
-                </a>
-              </Link>
-            </div>
-          </div>
-          
+        <div className="flex items-center justify-between py-1">
           <div className="flex items-center space-x-4">
-            <Link href="/post-property">
-              <a className="hidden md:block text-sm text-secondary hover:underline">
-                Post Property <span className="text-primary">FREE</span>
-              </a>
-            </Link>
-            
-            {isAuthenticated ? (
-              <div className="hidden md:flex items-center space-x-2">
-                <Link href="/dashboard">
-                  <a className="px-3 py-1 text-sm font-medium text-gray-700 hover:text-primary">
-                    {user.name}
-                  </a>
-                </Link>
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  onClick={async () => {
-                    await fetch("/api/logout", { method: "POST" });
-                    window.location.href = "/";
-                  }}
-                  className="px-3 py-1 text-sm font-medium"
-                >
-                  Logout
-                </Button>
-              </div>
-            ) : (
-              <div className="hidden md:flex items-center space-x-2">
-                <Link href="/login">
-                  <Button variant="ghost" size="sm" className="px-3 py-1 text-sm font-medium text-gray-700 hover:text-primary">
-                    Login
-                  </Button>
-                </Link>
-                <Link href="/signup">
-                  <Button size="sm" className="px-3 py-1 text-sm font-medium text-white bg-primary rounded hover:bg-red-700">
-                    Sign Up
-                  </Button>
-                </Link>
-              </div>
-            )}
-            
             <button 
-              className="md:hidden text-gray-600"
+              className="text-white p-1"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
-              <i className="fas fa-bars text-xl"></i>
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
             </button>
+            
+            <Link href="/">
+              <a className="flex items-center">
+                <span className="text-white text-xl font-semibold">99acres</span>
+              </a>
+            </Link>
+          </div>
+          
+          <div className="flex items-center">
+            <Link href="/post-property">
+              <a className="text-sm bg-green-500 text-white px-2 py-1 rounded flex items-center">
+                <span>Post property</span> <span className="text-xs ml-1 bg-white text-green-600 px-1 rounded">FREE</span>
+              </a>
+            </Link>
           </div>
         </div>
         
@@ -117,7 +55,7 @@ const Header = () => {
           isOpen={mobileMenuOpen} 
           onClose={() => setMobileMenuOpen(false)}
           isAuthenticated={isAuthenticated}
-          user={user}
+          user={userInfo}
         />
       </div>
     </header>

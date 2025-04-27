@@ -13,23 +13,24 @@
   --card-foreground: 20 14.3% 4.1%;
   --border: 20 5.9% 90%;
   --input: 20 5.9% 90%;
-  --primary: 350 81% 49%; /* #e51935 */
-  --primary-foreground: 211 100% 99%;
-  --secondary: 209 75% 32%; /* #0c5394 */
-  --secondary-foreground: 24 9.8% 10%;
-  --accent: 187 60% 48%; /* #32b7c0 */
-  --accent-foreground: 24 9.8% 10%;
+  --primary: 215 100% 50%; /* #0078ff 99acres primary blue */
+  --primary-foreground: 0 0% 100%;
+  --secondary: 142 71% 45%; /* #1dbf73 99acres green */
+  --secondary-foreground: 0 0% 100%;
+  --accent: 0 100% 67%; /* #ff5a5f 99acres accent red */
+  --accent-foreground: 0 0% 100%;
   --destructive: 0 84.2% 60.2%;
   --destructive-foreground: 60 9.1% 97.8%;
   --ring: 20 14.3% 4.1%;
   --radius: 0.5rem;
   
-  /* Chart colors */
-  --chart-1: 209 75% 32%;
-  --chart-2: 350 81% 49%;
-  --chart-3: 187 60% 48%;
-  --chart-4: 40 100% 50%;
-  --chart-5: 269 80% 40%;
+  /* 99acres specific colors */
+  --99a-blue: 215 100% 50%; /* #0078ff */
+  --99a-dark-blue: 211 100% 26%; /* #004e85 */
+  --99a-green: 142 71% 45%; /* #1dbf73 */
+  --99a-light-blue: 193 100% 46%; /* #00aeff */
+  --99a-light-gray: 0 0% 96%; /* #f5f5f5 */
+  --99a-pink: 348 100% 61%; /* #f7385f */
 }
 
 .dark {

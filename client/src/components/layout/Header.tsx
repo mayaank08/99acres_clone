@@ -9,15 +9,11 @@ const Header = () => {
   const [location] = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const { data: user } = useQuery({
-    queryKey: ["/api/user"],
-    retry: false,
-    gcTime: 0,
-    staleTime: 0
+  const { data: userData } = useQuery<User | null>({
+    queryKey: ["/api/user"]
   });
 
-  const userInfo = user as User | null;
-  const isAuthenticated = !!userInfo;
+  const isAuthenticated = !!userData;
 
   return (
     <header className="sticky top-0 z-50 bg-blue-600 text-white">
@@ -55,7 +51,7 @@ const Header = () => {
           isOpen={mobileMenuOpen} 
           onClose={() => setMobileMenuOpen(false)}
           isAuthenticated={isAuthenticated}
-          user={userInfo}
+          user={userData}
         />
       </div>
     </header>

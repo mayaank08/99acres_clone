@@ -1,27 +1,15 @@
 import HeroSection from "@/components/home/HeroSection";
-import FeaturedProperties from "@/components/home/FeaturedProperties";
-import PropertiesByCity from "@/components/home/PropertiesByCity";
-import PropertyTypes from "@/components/home/PropertyTypes";
-import RecentListings from "@/components/home/RecentListings";
-import PropertyTools from "@/components/home/PropertyTools";
-import TopAgents from "@/components/home/TopAgents";
 import { Helmet } from "react-helmet";
 
 const HomePage = () => {
   return (
     <>
       <Helmet>
-        <title>99acres Clone - Real Estate Property Search in India</title>
-        <meta name="description" content="Search real estate properties across India. Buy, Sell or Rent residential and commercial properties." />
+        <title>Real Estate | Property in India | Buy, Sale, Rent Properties | 99acres</title>
+        <meta name="description" content="99acres.com India's No.1 Real Estate Portal - Buy, Sale, Rent residential and commercial properties in India." />
       </Helmet>
       
       <HeroSection />
-      <FeaturedProperties />
-      <PropertiesByCity />
-      <PropertyTypes />
-      <RecentListings />
-      <PropertyTools />
-      <TopAgents />
     </>
   );
 };

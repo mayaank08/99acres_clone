@@ -6,7 +6,7 @@ interface MobileMenuProps {
   isOpen: boolean;
   onClose: () => void;
   isAuthenticated: boolean;
-  user: User | null;
+  user?: User | null;
 }
 
 const MobileMenu = ({ isOpen, onClose, isAuthenticated, user }: MobileMenuProps) => {

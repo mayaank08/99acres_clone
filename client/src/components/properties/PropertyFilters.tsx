@@ -105,7 +105,7 @@ const PropertyFilters = ({ initialFilters, onFilterChange }: PropertyFiltersProp
               <SelectValue placeholder="All Cities" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Cities</SelectItem>
+              <SelectItem value="all_cities">All Cities</SelectItem>
               {cities.map((city) => (
                 <SelectItem key={city.id} value={city.id.toString()}>
                   {city.name}
@@ -126,7 +126,7 @@ const PropertyFilters = ({ initialFilters, onFilterChange }: PropertyFiltersProp
                 <SelectValue placeholder="All Localities" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Localities</SelectItem>
+                <SelectItem value="all_localities">All Localities</SelectItem>
                 {localities.map((locality) => (
                   <SelectItem key={locality.id} value={locality.id.toString()}>
                     {locality.name}
@@ -148,7 +148,7 @@ const PropertyFilters = ({ initialFilters, onFilterChange }: PropertyFiltersProp
               <SelectValue placeholder="All Types" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Types</SelectItem>
+              <SelectItem value="all_types">All Types</SelectItem>
               <SelectItem value="apartment">Apartment</SelectItem>
               <SelectItem value="house">Independent House</SelectItem>
               <SelectItem value="villa">Villa</SelectItem>
@@ -169,7 +169,7 @@ const PropertyFilters = ({ initialFilters, onFilterChange }: PropertyFiltersProp
               <SelectValue placeholder="All Listings" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Listings</SelectItem>
+              <SelectItem value="all_listings">All Listings</SelectItem>
               <SelectItem value="sale">For Sale</SelectItem>
               <SelectItem value="rent">For Rent</SelectItem>
               <SelectItem value="pg">PG/Co-living</SelectItem>
@@ -194,7 +194,7 @@ const PropertyFilters = ({ initialFilters, onFilterChange }: PropertyFiltersProp
                         <SelectValue placeholder="No Min" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">No Min</SelectItem>
+                        <SelectItem value="no_min">No Min</SelectItem>
                         <SelectItem value="1000000">10 Lac</SelectItem>
                         <SelectItem value="2000000">20 Lac</SelectItem>
                         <SelectItem value="3000000">30 Lac</SelectItem>
@@ -214,7 +214,7 @@ const PropertyFilters = ({ initialFilters, onFilterChange }: PropertyFiltersProp
                         <SelectValue placeholder="No Max" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">No Max</SelectItem>
+                        <SelectItem value="no_max">No Max</SelectItem>
                         <SelectItem value="2000000">20 Lac</SelectItem>
                         <SelectItem value="3000000">30 Lac</SelectItem>
                         <SelectItem value="5000000">50 Lac</SelectItem>
@@ -275,7 +275,7 @@ const PropertyFilters = ({ initialFilters, onFilterChange }: PropertyFiltersProp
                         <SelectValue placeholder="No Min" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">No Min</SelectItem>
+                        <SelectItem value="no_min_area">No Min</SelectItem>
                         <SelectItem value="500">500 sqft</SelectItem>
                         <SelectItem value="750">750 sqft</SelectItem>
                         <SelectItem value="1000">1000 sqft</SelectItem>
@@ -294,7 +294,7 @@ const PropertyFilters = ({ initialFilters, onFilterChange }: PropertyFiltersProp
                         <SelectValue placeholder="No Max" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">No Max</SelectItem>
+                        <SelectItem value="no_max_area">No Max</SelectItem>
                         <SelectItem value="1000">1000 sqft</SelectItem>
                         <SelectItem value="1500">1500 sqft</SelectItem>
                         <SelectItem value="2000">2000 sqft</SelectItem>

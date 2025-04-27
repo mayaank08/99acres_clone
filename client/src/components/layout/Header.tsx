@@ -4,6 +4,7 @@ import { User } from "@/lib/types";
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [showAllNav, setShowAllNav] = useState(false);
 
   const { data: userData } = useQuery<User | null>({
     queryKey: ["/api/user"]
@@ -12,60 +13,145 @@ const Header = () => {
   const isAuthenticated = !!userData;
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50">
-      {/* Status bar */}
-      <div className="bg-blue-600 h-7 flex items-center justify-between px-4">
-        <div className="text-white text-xs">12:36</div>
-        <div className="flex items-center">
-          <div className="text-white text-xs flex space-x-1">
-            <span className="flex items-center">
-              <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12.01 21.49L23.64 7c-.45-.34-4.93-4-11.64-4C5.28 3 .81 6.66.36 7l11.63 14.49.01.01.01-.01z"/>
-              </svg>
-              <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12.01 21.49L23.64 7c-.45-.34-4.93-4-11.64-4C5.28 3 .81 6.66.36 7l11.63 14.49.01.01.01-.01z"/>
-              </svg>
-            </span>
-            <span className="flex items-center">
-              <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9z"/>
-                <path d="M5 13l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/>
-                <path d="M9 17l3 3 3-3c-1.65-1.66-4.34-1.66-6 0z"/>
-              </svg>
-            </span>
-            <span>4G</span>
+    <header className="bg-white shadow-sm sticky top-0 z-50">
+      {/* Top Bar - Help, Login, etc. */}
+      <div className="bg-white border-b border-gray-200 py-2 hidden md:block">
+        <div className="container mx-auto px-4 flex justify-between items-center">
+          <div className="text-xs text-gray-500 flex items-center space-x-4">
+            <span>For guidance : 1800-41-99099</span>
+          </div>
+          
+          <div className="flex items-center space-x-4 text-xs">
+            <a href="#" className="text-gray-500 hover:text-blue-600">Download App</a>
+            <a href="#" className="text-gray-500 hover:text-blue-600">Advertise</a>
+            <a href="#" className="text-gray-500 hover:text-blue-600">Forum</a>
+            
+            {isAuthenticated ? (
+              <div className="relative group">
+                <button className="text-gray-800 font-medium flex items-center">
+                  <span>My Account</span>
+                  <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-md py-1 hidden group-hover:block">
+                  <a href="/dashboard" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Dashboard</a>
+                  <a href="/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">My Profile</a>
+                  <button 
+                    className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    onClick={async () => {
+                      await fetch("/api/logout", { method: "POST" });
+                      window.location.reload();
+                    }}
+                  >
+                    Logout
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="flex items-center space-x-2">
+                <a href="/login" className="text-blue-600 font-medium">Login</a>
+                <span className="text-gray-400">|</span> 
+                <a href="/signup" className="text-blue-600 font-medium">Register</a>
+              </div>
+            )}
           </div>
         </div>
       </div>
       
-      {/* Main header */}
-      <div className="bg-emerald-600 px-3 py-2 flex items-center justify-between">
-        <button 
-          className="text-white"
-          onClick={() => setMenuOpen(!menuOpen)}
-        >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
-        </button>
-        
-        <div className="flex-1 flex justify-center">
-          <div className="text-white text-xl font-bold">
-            99acres
+      {/* Main Navigation */}
+      <div className="bg-white py-3">
+        <div className="container mx-auto px-4 flex justify-between items-center">
+          {/* Logo */}
+          <div className="flex items-center">
+            <a href="/" className="flex items-center">
+              <div className="w-24 h-8 bg-blue-600 text-white flex items-center justify-center rounded">
+                <span className="font-bold text-lg">99acres</span>
+              </div>
+            </a>
           </div>
-        </div>
-        
-        <div>
-          <button className="inline-flex items-center bg-green-500 text-white rounded-md px-2 py-0.5 text-sm">
-            <span>Post property</span>
-            <span className="ml-1 bg-white text-green-600 text-xs px-1 rounded">FREE</span>
-          </button>
+          
+          {/* Main Menu - Desktop */}
+          <div className="hidden md:flex items-center space-x-6">
+            <div className="relative group">
+              <button className="text-gray-800 font-medium flex items-center">
+                <span>Buy</span>
+                <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <div className="absolute left-0 mt-2 w-48 bg-white shadow-lg rounded-md py-1 hidden group-hover:block">
+                <a href="/properties?listing_type=sale&property_type=apartment" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Apartments</a>
+                <a href="/properties?listing_type=sale&property_type=house" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Houses</a>
+                <a href="/properties?listing_type=sale&property_type=villa" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Villas</a>
+                <a href="/properties?listing_type=sale&property_type=plot" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Plots</a>
+              </div>
+            </div>
+            
+            <div className="relative group">
+              <button className="text-gray-800 font-medium flex items-center">
+                <span>Rent</span>
+                <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <div className="absolute left-0 mt-2 w-48 bg-white shadow-lg rounded-md py-1 hidden group-hover:block">
+                <a href="/properties?listing_type=rent&property_type=apartment" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Apartments</a>
+                <a href="/properties?listing_type=rent&property_type=house" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Houses</a>
+                <a href="/properties?listing_type=rent&property_type=villa" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Villas</a>
+              </div>
+            </div>
+            
+            <div className="relative group">
+              <button className="text-gray-800 font-medium flex items-center">
+                <span>Sell</span>
+                <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <div className="absolute left-0 mt-2 w-48 bg-white shadow-lg rounded-md py-1 hidden group-hover:block">
+                <a href="/post-property" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Post Property</a>
+                <a href="/seller-dashboard" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Seller Dashboard</a>
+              </div>
+            </div>
+            
+            <div className="relative group">
+              <button className="text-gray-800 font-medium flex items-center">
+                <span>Property Services</span>
+                <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <div className="absolute left-0 mt-2 w-48 bg-white shadow-lg rounded-md py-1 hidden group-hover:block">
+                <a href="/home-loans" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Home Loans</a>
+                <a href="/legal-services" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Legal Services</a>
+                <a href="/property-valuation" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Property Valuation</a>
+              </div>
+            </div>
+            
+            <a href="#" className="text-white bg-red-500 hover:bg-red-600 px-4 py-2 rounded-md text-sm font-medium">
+              POST PROPERTY <span className="text-xs font-normal">FREE</span>
+            </a>
+          </div>
+          
+          {/* Mobile Menu Button */}
+          <div className="md:hidden">
+            <button 
+              className="text-gray-800"
+              onClick={() => setMenuOpen(!menuOpen)}
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
       
+      {/* Mobile Menu */}
       {menuOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50" onClick={() => setMenuOpen(false)}>
-          <div className="bg-white w-3/4 h-full" onClick={e => e.stopPropagation()}>
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 md:hidden" onClick={() => setMenuOpen(false)}>
+          <div className="bg-white w-3/4 h-full overflow-y-auto" onClick={e => e.stopPropagation()}>
             <div className="p-4 border-b">
               {isAuthenticated ? (
                 <div>
@@ -83,10 +169,10 @@ const Header = () => {
               ) : (
                 <div className="space-y-2">
                   <div className="flex space-x-2">
-                    <a href="/login" className="flex-1 text-center py-1 border border-blue-500 text-blue-500 rounded-md">
+                    <a href="/login" className="flex-1 text-center py-1.5 border border-blue-500 text-blue-500 rounded-md">
                       Login
                     </a>
-                    <a href="/signup" className="flex-1 text-center py-1 bg-blue-500 text-white rounded-md">
+                    <a href="/signup" className="flex-1 text-center py-1.5 bg-blue-500 text-white rounded-md">
                       Sign Up
                     </a>
                   </div>
@@ -94,14 +180,58 @@ const Header = () => {
               )}
             </div>
             
-            <div className="p-4 space-y-4">
-              <a href="/properties?listing_type=sale" className="block py-2 border-b">Buy</a>
-              <a href="/properties?listing_type=rent" className="block py-2 border-b">Rent</a>
-              <a href="/properties?listing_type=pg" className="block py-2 border-b">PG/Co-living</a>
-              <a href="/properties?property_type=commercial" className="block py-2 border-b">Commercial</a>
-              <a href="/post-property" className="block py-2 border-b">
-                Post Property <span className="text-green-500">FREE</span>
-              </a>
+            <div className="p-4">
+              <div className="mb-4">
+                <a href="/post-property" className="block w-full text-center bg-red-500 text-white py-2 rounded-md">
+                  POST PROPERTY <span className="text-xs">FREE</span>
+                </a>
+              </div>
+              
+              <div className="space-y-4">
+                <div className="border-b pb-2">
+                  <div className="flex justify-between items-center" onClick={() => setShowAllNav(prev => !prev)}>
+                    <span className="font-medium">Buy</span>
+                    <svg className={`w-4 h-4 transform ${showAllNav ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                  {showAllNav && (
+                    <div className="mt-2 pl-4 space-y-2">
+                      <a href="/properties?listing_type=sale&property_type=apartment" className="block text-sm text-gray-700">Apartments</a>
+                      <a href="/properties?listing_type=sale&property_type=house" className="block text-sm text-gray-700">Houses</a>
+                      <a href="/properties?listing_type=sale&property_type=villa" className="block text-sm text-gray-700">Villas</a>
+                      <a href="/properties?listing_type=sale&property_type=plot" className="block text-sm text-gray-700">Plots</a>
+                    </div>
+                  )}
+                </div>
+                
+                <div className="border-b pb-2">
+                  <div className="flex justify-between items-center">
+                    <span className="font-medium">Rent</span>
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                </div>
+                
+                <div className="border-b pb-2">
+                  <div className="flex justify-between items-center">
+                    <span className="font-medium">Sell</span>
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                </div>
+                
+                <div className="border-b pb-2">
+                  <div className="flex justify-between items-center">
+                    <span className="font-medium">Property Services</span>
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

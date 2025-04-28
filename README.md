@@ -6,10 +6,15 @@ You can view the demo of the project here: Demo Link (Include your demo link her
 
 Features
 User Authentication: Users can register, log in, and manage their profiles.
+
 Property Listings: Users can view a list of properties, filter by location, price, and other criteria.
+
 Search Functionality: A search bar to find properties based on keywords, locations, and more.
+
 Property Details: View detailed information about each property, including images, descriptions, and contact details.
+
 Responsive Design: The website is fully responsive and adapts to various screen sizes.
+
 Admin Panel (Optional): Admins can manage property listings and user data.
 
 Tech Stack
